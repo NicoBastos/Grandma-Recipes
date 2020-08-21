@@ -1,29 +1,24 @@
 import React from "react";
 import classes from "./App.module.css";
-import axios from "axios";
-const App = () => {
-  const recipe = {
-    title: "Paella Valenciana",
-    description: "Typical spanish paella, made with rabbit",
-    ingredients: {
-      "chicken breast": "2 pounds" 
-    }
-  };
+import useGetRecipes from "./hooks/getRecipes";
+import getFetcher from "./hooks/fetcher";
+import useSWR from "swr";
 
-  const handleClick = async () => {
-    return axios
-      .post("http://localhost:5000/api/recipes/", recipe)
-      .then((res) => {
-        console.log(res.data);
-        return { ...res.data };
-      })
-      .catch((error) => {
-        throw error;
-      });
-  };
+const App = () => {
+  // const { recipes, isLoading, isError } = useGetRecipes(100);
+  const { data, error } = useSWR(`/api/recipes/`, getFetcher);
+  if (error) throw error;
+  console.log(data, "asdf");
+  const recipes = data.map((recipe) => {
+    return { title: recipe.title, description: recipe.description };
+  });
   return (
-    <div className={classes.App}>
-      <button onClick={handleClick}>request</button>
+    <div>
+      {/* {aaa.map((recipe) => (
+        <tr>
+          <td>{recipe.title}</td>
+        </tr>
+      ))} */}
     </div>
   );
 };
